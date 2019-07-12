@@ -24,5 +24,11 @@ description: Record and play audio on the device.
 ## Documentation
 See https://github.com/apache/cordova-plugin-media
 
+## Changes
+- 2019-07-12: Added Media.requestFocus and Media.abandonFocus to control audio focus. Media.play no longer requests focus.
+
 ## Supported platforms
-- Android
+- Android (not stable)
+
+## Planned platforms
+- IOS
