@@ -26,6 +26,7 @@ See https://github.com/apache/cordova-plugin-media
 
 ## Changes
 - 2019-07-12: Added Media.requestFocus and Media.abandonFocus to control audio focus. Media.play no longer requests focus.
+- 2019-07-12: Removed all permissions from plugin.xml except android.permission.MODIFY_AUDIO_SETTINGS.
 
 ## Supported platforms
 - Android (not stable)
