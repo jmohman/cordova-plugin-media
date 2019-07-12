@@ -293,6 +293,26 @@ module.exports = {
         var volume = args[1];
         var thisM = Media.get(id);
         thisM.volume = volume;
+    },
+    // Request audio focus
+    requestAudioFocus: function (win, lose, args) {
+        var id = args[0];
+        try {
+            var thisM = Media.get(id);
+            thisM.node.requestAudioFocus();
+        } catch (err) {
+            lose("Failed to get focus");
+        }
+    },
+    // Abandon audio focus
+    abandonAudioFocus: function (win, lose, args) {
+        var id = args[0];
+        try {
+            var thisM = Media.get(id);
+            thisM.node.abandonAudioFocus();
+        } catch (err) {
+            lose("Failed to abandon focus");
+        }
     }
 };
 

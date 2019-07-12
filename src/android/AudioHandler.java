@@ -179,6 +179,12 @@ public class AudioHandler extends CordovaPlugin {
             callbackContext.sendPluginResult(new PluginResult(status, f));
             return true;
         }
+		else if (action.equals("requestAudioFocus")) {
+            this.requestAudioFocus();
+        }
+		else if (action.equals("abandonAudioFocus")) {
+            this.abandonAudioFocus();
+        }
         else { // Unrecognized action.
             return false;
         }
@@ -318,7 +324,6 @@ public class AudioHandler extends CordovaPlugin {
     public void startPlayingAudio(String id, String file) {
         AudioPlayer audio = getOrCreatePlayer(id, file);
         audio.startPlaying(file);
-        getAudioFocus();
     }
 
     /**
@@ -414,6 +419,30 @@ public class AudioHandler extends CordovaPlugin {
             audio.resumePlaying();
         }
         this.pausedForFocus.clear();
+    }
+
+	public void requestAudioFocus() {
+        String TAG2 = "AudioHandler.requestAudioFocus(): Error : ";
+
+        AudioManager am = (AudioManager) this.cordova.getActivity().getSystemService(Context.AUDIO_SERVICE);
+        int result = am.requestAudioFocus(focusChangeListener,
+                                          AudioManager.STREAM_NOTIFICATION,
+                                          AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+
+        if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            LOG.e(TAG2,result + " instead of " + AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
+        }
+    }
+
+	public void abandonAudioFocus() {
+        String TAG2 = "AudioHandler.abandonAudioFocus(): Error : ";
+
+        AudioManager am = (AudioManager) this.cordova.getActivity().getSystemService(Context.AUDIO_SERVICE);
+        int result = am.abandonAudioFocus(focusChangeListener);
+
+        if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            LOG.e(TAG2,result + " instead of " + AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
+        }
     }
 
     /**

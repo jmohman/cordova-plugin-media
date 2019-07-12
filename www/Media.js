@@ -187,6 +187,20 @@ Media.prototype.getCurrentAmplitude = function(success, fail) {
 };
 
 /**
+ * Requesting media focus AUDIOFOCUS_GAIN_TRANSIENT.
+ */
+Media.prototype.requestFocus = function (options) {
+    exec(null, null, "Media", "requestAudioFocus", [this.id, this.src, options]);
+};
+
+/**
+ * Abandoning media focus request.
+ */
+Media.prototype.abandonFocus = function (options) {
+    exec(null, null, "Media", "abandonAudioFocus", [this.id, this.src, options]);
+};
+
+/**
  * Audio has status update.
  * PRIVATE
  *
