@@ -27,6 +27,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.net.Uri;
 import android.os.Build;
@@ -71,6 +73,8 @@ public class AudioHandler extends CordovaPlugin {
 
     private String recordId;
     private String fileUriStr;
+
+	private AudioFocusRequest requestAudioFocusRequest;
 
     /**
      * Constructor.
@@ -425,9 +429,19 @@ public class AudioHandler extends CordovaPlugin {
         String TAG2 = "AudioHandler.requestAudioFocus(): Error : ";
 
         AudioManager am = (AudioManager) this.cordova.getActivity().getSystemService(Context.AUDIO_SERVICE);
-        int result = am.requestAudioFocus(focusChangeListener,
-                                          AudioManager.STREAM_NOTIFICATION,
-                                          AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+
+		AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build();
+
+		this.requestAudioFocusRequest =  new AudioFocusRequest
+				.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+				.setOnAudioFocusChangeListener(focusChangeListener)
+				.setAudioAttributes(audioAttributes)
+				.build();
+
+		int result = am.requestAudioFocus(this.requestAudioFocusRequest);
 
         if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             LOG.e(TAG2,result + " instead of " + AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
@@ -437,8 +451,8 @@ public class AudioHandler extends CordovaPlugin {
 	public void abandonAudioFocus() {
         String TAG2 = "AudioHandler.abandonAudioFocus(): Error : ";
 
-        AudioManager am = (AudioManager) this.cordova.getActivity().getSystemService(Context.AUDIO_SERVICE);
-        int result = am.abandonAudioFocus(focusChangeListener);
+		AudioManager am = (AudioManager) this.cordova.getActivity().getSystemService(Context.AUDIO_SERVICE);
+        int result = am.abandonAudioFocusRequest(this.requestAudioFocusRequest);
 
         if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             LOG.e(TAG2,result + " instead of " + AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
